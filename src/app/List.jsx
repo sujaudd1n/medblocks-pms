@@ -9,29 +9,30 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-
+import { Button } from "@/components/ui/button";
+import { useLiveQuery } from "@electric-sql/pglite-react";
 import { useState, useEffect } from 'react';
-import { getAllPatients } from './pgl';
+import { deletePatient } from "./HomePage";
+import { usePGlite } from "@electric-sql/pglite-react";
 
 export default function PatientTable() {
-    const [patients, setPatients] = useState([]);
+    const patients = useLiveQuery(`
+        SELECT * FROM patients
+        `,
+    )
+    console.log(patients)
 
-    const loadPatients = async () => {
-        try {
-            const data = await getAllPatients();
-            setPatients(data.rows);
-        } catch (err) {
-            setError(err.message);
-        }
+    const db = usePGlite();
+    async function handleDelete(id) {
+        await deletePatient(db, id)
+        // callback();
     }
-    useEffect(() => {
-        loadPatients()
-    }, [])
+    if (!patients || patients.rows.length === 0)
+        return <>nothing</>
 
     return (
         <div>
-
-            {patients.length > 0 ? (
+            {patients.rows.length > 0 ? (
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -43,10 +44,11 @@ export default function PatientTable() {
                             <TableHead>Email</TableHead>
                             <TableHead>Phone</TableHead>
                             <TableHead>Address</TableHead>
+                            <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {patients.map(patient => (
+                        {patients.rows.map(patient => (
                             <TableRow key={patient.id}>
                                 <TableCell>{patient.id}</TableCell>
                                 <TableCell>{patient.firstname}</TableCell>
@@ -56,6 +58,10 @@ export default function PatientTable() {
                                 <TableCell>{patient.email || ''}</TableCell>
                                 <TableCell>{patient.phone || ''}</TableCell>
                                 <TableCell>{patient.address || ''}</TableCell>
+                                <TableCell>
+                                    <Button>Edit</Button>
+                                    <Button onClick={() => handleDelete(patient.id)}>Delete</Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

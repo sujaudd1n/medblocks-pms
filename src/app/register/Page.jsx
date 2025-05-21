@@ -1,10 +1,10 @@
 "use client";
 
-import { PGlite } from "@electric-sql/pglite";
-import { registerPatient } from "../pgl";
+import { registerPatient } from "../HomePage";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
+
 
 import {
     Select,
@@ -15,23 +15,25 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { useState } from "react";
+import { usePGlite } from "@electric-sql/pglite-react";
 
 console.log("creating table")
 
 
-export default function Page() {
+export default function Page({ callback }) {
     return (
         <div>
             <h2>Register Patient</h2>
             <div>
-                <RegistrationForm />
+                <RegistrationForm callback={callback} />
             </div>
 
         </div>
     )
 }
 
-function RegistrationForm() {
+function RegistrationForm({ callback }) {
+    const db = usePGlite();
     const [formData, setFormData] = useState({
         firstname: 'first',
         lastname: 'last',
@@ -45,7 +47,8 @@ function RegistrationForm() {
     async function handleSubmit(e) {
         e.preventDefault();
         console.log(formData);
-        await registerPatient(formData)
+        await registerPatient(db, formData)
+        callback()
     }
 
     function handleInputChange(e) {
