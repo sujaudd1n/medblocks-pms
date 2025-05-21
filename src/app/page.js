@@ -47,9 +47,9 @@ export default function Home() {
       {
         db ?
           <PGliteProvider db={db}>
-            < HomePage />
+            <HomePage />
           </PGliteProvider >
-          : <p>lol</p>
+          : <p>Database loading...</p>
       }
     </div>
 
