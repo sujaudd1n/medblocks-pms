@@ -3,17 +3,17 @@
 import { useState, useEffect } from "react";
 import { PGliteProvider } from "@electric-sql/pglite-react";
 import { PGliteWorker } from '@electric-sql/pglite/worker'
-import { live } from "@electric-sql/pglite/live";
+import { live, PGliteWithLive } from "@electric-sql/pglite/live";
 import HomePage from "./HomePage";
 
 let dbGlobal;
 
 export default function Home() {
-  const [db, setDb] = useState(null);
+  const [db, setDb] = useState();
 
   useEffect(() => {
     async function setupDb() {
-      dbGlobal = new PGliteWorker(
+      dbGlobal = await PGliteWorker.create(
         new Worker(new URL("./worker-process.js", import.meta.url), {
           type: "module",
         }),
@@ -49,7 +49,7 @@ export default function Home() {
           <PGliteProvider db={db}>
             <HomePage />
           </PGliteProvider >
-          : <p>Database loading...</p>
+          : <p className="absolute top-[50%] left-[50%] -translate-x-[50%] text-center">Application loading...</p>
       }
     </div>
 

@@ -1,5 +1,5 @@
 'use client';
-import { Trash2 } from "lucide-react";
+import { LoaderCircle, Trash2 } from "lucide-react";
 import { Table as TableIcon } from "lucide-react";
 import { IdCard } from "lucide-react";
 
@@ -15,28 +15,38 @@ import {
 import { Button } from "@/components/ui/button";
 import { useLiveQuery } from "@electric-sql/pglite-react";
 import { usePGlite } from "@electric-sql/pglite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function PatientsList() {
     const [isTable, setIsTable] = useState(true);
+    // const [patients, setPatients] = useState(null);
     const db = usePGlite();
+
     const patients = useLiveQuery(`
-        SELECT * FROM patients
-        `,
+    SELECT * FROM patients
+    `,
     )
     console.log(patients)
+
+    // async function loadPatients() {
+    //     const patients = await db.query("SELECT * FROM patients");
+    //     console.log(patients)
+    //     setPatients(patients);
+    // }
 
     async function deletePatient(id) {
         try {
             const result = await db.query('DELETE FROM patients where id = $1', [id]);
             toast("Patient deleted successfully.")
+            // await loadPatients();
             return result;
         } catch (err) {
             toast("Patient deletion failed.")
         }
     }
 
+    // useEffect(() => { loadPatients() }, [])
 
     return (
         <div className="mb-10">
@@ -48,7 +58,12 @@ export default function PatientsList() {
 
 function GetPatientsIfExists({ patients, deletePatient, isTable, setIsTable }) {
     if (!patients)
-        return <p>Loading patients. Please wait.</p>
+        return (
+            <div className="flex flex-col items-center gap-3">
+                <LoaderCircle className="animate-spin" />
+                <p>Loading patients. Please wait.</p>
+            </div>
+        )
     if (patients.rows.length === 0)
         return <p>There are no patients. Please register one.</p>
     return (
