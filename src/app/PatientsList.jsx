@@ -1,5 +1,5 @@
 'use client';
-import { LoaderCircle, Trash2 } from "lucide-react";
+import { LoaderCircle, Trash2, UserRoundPen } from "lucide-react";
 import { Table as TableIcon } from "lucide-react";
 import { IdCard } from "lucide-react";
 import {
@@ -17,6 +17,19 @@ import { useLiveQuery } from "@electric-sql/pglite-react";
 import { usePGlite } from "@electric-sql/pglite-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { PatientForm } from "./RegistrationForm";
+
+
 
 export default function PatientsList() {
     const [isTable, setIsTable] = useState(true);
@@ -24,31 +37,19 @@ export default function PatientsList() {
     const db = usePGlite();
 
     const patients = useLiveQuery(`
-    SELECT * FROM patients
+    SELECT * FROM patients ORDER BY id;
     `,
     )
-    patients
-    console.log(patients)
-
-    // async function loadPatients() {
-    //     const patients = await db.query("SELECT * FROM patients");
-    //     console.log(patients)
-    //     setPatients(patients);
-    // }
 
     async function deletePatient(id) {
         try {
             const result = await db.query('DELETE FROM patients where id = $1', [id]);
             toast("Patient deleted successfully.")
-            // await loadPatients();
             return result;
         } catch (err) {
             toast("Patient deletion failed.")
         }
     }
-
-    // useEffect(() => { loadPatients() }, [])
-
 
     return (
         <div className="mb-10">
@@ -62,7 +63,6 @@ export default function PatientsList() {
 function GetPatientsIfExists({ patients, q, deletePatient, isTable, setIsTable }) {
     function filterPatients(patient) {
         const fullName = patient.firstname + ' ' + patient.lastname;
-        console.log(fullName)
         return fullName.toLowerCase().includes(q.toLowerCase());
     }
     if (!patients)
@@ -120,14 +120,18 @@ function PatientTable({ patients, deletePatient }) {
                             <TableCell>{patient.phone || ''}</TableCell>
                             <TableCell>{patient.address || ''}</TableCell>
                             <TableCell>
-                                <Button
-                                    onClick={() => deletePatient(patient.id)}
-                                    variant="outline"
-                                    size="icon"
-                                    title="Delete"
-                                >
-                                    <Trash2 />
-                                </Button>
+                                <div className="mt-auto pt-3">
+                                    <EditPatient patient={patient} />
+                                    <Button
+                                        onClick={() => deletePatient(patient.id)}
+                                        variant="outline"
+                                        size="icon"
+                                        title="Delete"
+                                        className="ml-1"
+                                    >
+                                        <Trash2 />
+                                    </Button>
+                                </div>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -137,6 +141,59 @@ function PatientTable({ patients, deletePatient }) {
     );
 
 }
+
+function EditPatient({ patient }) {
+    const [open, setOpen] = useState(false)
+    const db = usePGlite();
+    async function edit(e, patientData) {
+        e.preventDefault();
+        try {
+            const result = await db.query(
+                `UPDATE patients SET
+                firstname = $1, lastname = $2, dob = $3, gender = $4, email = $5, phone = $6, address = $7
+                WHERE id = $8`,
+                [
+                    patientData.firstname,
+                    patientData.lastname,
+                    patientData.dob,
+                    patientData.gender,
+                    patientData.email,
+                    patientData.phone,
+                    patientData.address,
+                    patientData.id
+                ]
+            );
+            toast(`Patient ${patientData.firstname} ${patientData.lastname} has been edited.`)
+            setOpen(false)
+        } catch (err) {
+            toast(`Patient edit failed`);
+        }
+    }
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button
+                    variant="outline"
+                    size="icon"
+                    title="Edit"
+                >
+                    <UserRoundPen />
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Edit profile</DialogTitle>
+                    <DialogDescription>
+                        Make changes to your profile here. Click save when you're done.
+                    </DialogDescription>
+                </DialogHeader>
+                <PatientForm patientData={{ ...patient, gender: patient.gender, dob: patient.dob.toISOString().split('T')[0] }} handleSubmit={edit} handleValue={'Edit'} HandleIcon={UserRoundPen} />
+            </DialogContent>
+        </Dialog>
+    )
+}
+
 
 function PatientsCards({ patients, deletePatient }) {
     return (
@@ -149,20 +206,25 @@ function PatientsCards({ patients, deletePatient }) {
 
 function PatientCard({ patient, deletePatient }) {
     return (
-        <div className="bg-secondary p-3 rounded-md basis-[250px] grow">
+        <div className="bg-secondary p-3 rounded-md basis-[250px] grow flex flex-col">
             <h3 className="text-xl font-semibold mb-3">{patient.firstname} {patient.lastname}</h3>
             <p>DOB: {patient.dob.toLocaleDateString()}</p>
             <p>Gender: {patient.gender}</p>
             <p>Email: {patient.email}</p>
             <p>Phone: {patient.phone}</p>
             <p>Address: {patient.address}</p>
-            <Button
-                onClick={() => deletePatient(patient.id)}
-                variant="outline"
-                title="Delete"
-            >
-                <Trash2 /> Delete
-            </Button>
+            <div className="mt-auto pt-3">
+                <EditPatient patient={patient} />
+                <Button
+                    onClick={() => deletePatient(patient.id)}
+                    variant="outline"
+                    size="icon"
+                    title="Delete"
+                    className="ml-1"
+                >
+                    <Trash2 />
+                </Button>
+            </div>
         </div>
     )
 }

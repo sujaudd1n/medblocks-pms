@@ -1,6 +1,6 @@
 import Link from "next/link";
 import PatientsList from "./PatientsList";
-import RegistrationForm from "./register/RegistrationForm";
+import RegistrationForm from "./RegistrationForm";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { UserRoundPlus } from "lucide-react";
