@@ -13,8 +13,9 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useState } from "react";
 import { usePGlite } from "@electric-sql/pglite-react";
+import { toast } from "sonner";
 
-export default function RegistrationForm() {
+export default function RegistrationForm({ formRef }) {
     const db = usePGlite();
     async function registerPatient(patientData) {
         try {
@@ -31,10 +32,10 @@ export default function RegistrationForm() {
                     patientData.address
                 ]
             );
+            toast(`Patient ${patientData.firstname} ${patientData.lastname} has been registered.`)
             return result.rows[0].id;
         } catch (err) {
-            console.error("registering patient error:", err);
-            throw err;
+            toast(`Patient registration failed`);
         }
     }
     const [formData, setFormData] = useState({
@@ -78,6 +79,7 @@ export default function RegistrationForm() {
                 <div className="grid w-full max-w-sm items-center gap-1.5">
                     <Label htmlFor="firstname">First Name</Label>
                     <Input
+                        ref={formRef}
                         value={formData.firstname}
                         onChange={handleInputChange}
                         type="text"

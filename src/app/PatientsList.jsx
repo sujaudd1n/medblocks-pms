@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useLiveQuery } from "@electric-sql/pglite-react";
 import { usePGlite } from "@electric-sql/pglite-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function PatientsList() {
     const [isTable, setIsTable] = useState(true);
@@ -28,10 +29,10 @@ export default function PatientsList() {
     async function deletePatient(id) {
         try {
             const result = await db.query('DELETE FROM patients where id = $1', [id]);
+            toast("Patient deleted successfully.")
             return result;
         } catch (err) {
-            console.error("delete patients error:", err);
-            throw err;
+            toast("Patient deletion failed.")
         }
     }
 

@@ -2,9 +2,16 @@ import Link from "next/link";
 import PatientsList from "./PatientsList";
 import RegistrationForm from "./register/RegistrationForm";
 import { Button } from "@/components/ui/button";
+import { useRef } from "react";
 
 
 export default function HomePage() {
+    const formRef = useRef(null);
+
+    function focusOnInput() {
+        formRef.current.focus()
+    }
+
     return (
         <>
             <header className="bg-secondary p-3">
@@ -15,10 +22,12 @@ export default function HomePage() {
                     <p className="text-xl">Streamline Patient Care with Our Comprehensive Management System</p>
                     <p className="text-sm">Simplify patient management, improve care coordination, and enhance patient outcomes with our intuitive and user-friendly platform.</p>
                     <Link href="#">
-                        <Button>Register Now</Button>
+                        <Button
+                            onClick={focusOnInput}
+                        >Register Now</Button>
                     </Link>
                 </div>
-                <RegistrationForm />
+                <RegistrationForm formRef={formRef} />
                 <PatientsList />
             </div>
             <Footer />
