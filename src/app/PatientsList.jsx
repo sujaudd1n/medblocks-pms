@@ -2,7 +2,6 @@
 import { LoaderCircle, Trash2 } from "lucide-react";
 import { Table as TableIcon } from "lucide-react";
 import { IdCard } from "lucide-react";
-
 import {
     Table,
     TableBody,
@@ -13,6 +12,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useLiveQuery } from "@electric-sql/pglite-react";
 import { usePGlite } from "@electric-sql/pglite-react";
 import { useEffect, useState } from "react";
@@ -20,13 +20,14 @@ import { toast } from "sonner";
 
 export default function PatientsList() {
     const [isTable, setIsTable] = useState(true);
-    // const [patients, setPatients] = useState(null);
+    const [q, setQ] = useState('');
     const db = usePGlite();
 
     const patients = useLiveQuery(`
     SELECT * FROM patients
     `,
     )
+    patients
     console.log(patients)
 
     // async function loadPatients() {
@@ -48,15 +49,22 @@ export default function PatientsList() {
 
     // useEffect(() => { loadPatients() }, [])
 
+
     return (
         <div className="mb-10">
             <h2 className="text-xl text-center mb-5">Patients List</h2>
-            <GetPatientsIfExists patients={patients} deletePatient={deletePatient} isTable={isTable} setIsTable={setIsTable} />
+            <Input className="mb-5 max-w-[400px]" placeholder="Search by name" value={q} onChange={(e) => setQ(e.target.value)} />
+            <GetPatientsIfExists patients={patients} q={q} deletePatient={deletePatient} isTable={isTable} setIsTable={setIsTable} />
         </div>
     )
 }
 
-function GetPatientsIfExists({ patients, deletePatient, isTable, setIsTable }) {
+function GetPatientsIfExists({ patients, q, deletePatient, isTable, setIsTable }) {
+    function filterPatients(patient) {
+        const fullName = patient.firstname + ' ' + patient.lastname;
+        console.log(fullName)
+        return fullName.toLowerCase().includes(q.toLowerCase());
+    }
     if (!patients)
         return (
             <div className="flex flex-col items-center gap-3">
@@ -76,7 +84,7 @@ function GetPatientsIfExists({ patients, deletePatient, isTable, setIsTable }) {
                     <IdCard /> Card View
                 </Button>
             </div>
-            {isTable ? <PatientTable patients={patients} deletePatient={deletePatient} /> : <PatientsCards patients={patients} deletePatient={deletePatient} />}
+            {isTable ? <PatientTable patients={patients.rows.filter(filterPatients)} deletePatient={deletePatient} /> : <PatientsCards patients={patients.rows.filter(filterPatients)} deletePatient={deletePatient} />}
         </div>
 
     )
@@ -101,7 +109,7 @@ function PatientTable({ patients, deletePatient }) {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {patients.rows.map(patient => (
+                    {patients.map(patient => (
                         <TableRow key={patient.id}>
                             <TableCell>{patient.id}</TableCell>
                             <TableCell>{patient.firstname}</TableCell>
@@ -133,7 +141,7 @@ function PatientTable({ patients, deletePatient }) {
 function PatientsCards({ patients, deletePatient }) {
     return (
         <div className="flex flex-wrap justify-between gap-5">
-            {patients.rows.map((patient, idx) => <PatientCard key={idx} patient={patient} deletePatient={deletePatient} />)}
+            {patients.map((patient, idx) => <PatientCard key={idx} patient={patient} deletePatient={deletePatient} />)}
         </div>
     )
 

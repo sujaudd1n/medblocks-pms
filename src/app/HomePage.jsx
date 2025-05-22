@@ -4,6 +4,7 @@ import RegistrationForm from "./register/RegistrationForm";
 import { Button } from "@/components/ui/button";
 import { useRef } from "react";
 import { UserRoundPlus } from "lucide-react";
+import Image from "next/image";
 
 
 export default function HomePage() {
@@ -20,10 +21,18 @@ export default function HomePage() {
             </header>
             <div className="p-3 max-w-[1400px] mx-auto">
                 <div className="flex flex-col gap-5 items-center mb-10 md:gap-10">
-                    <p className="text-xl bg-linear-to-b from-emerald-400 to-sky-400 font-bold text-transparent font bg-clip-text md:text-3xl md:mt-10 lg:text-5xl lg:leading-[60px]">
-                        Streamline Patient Care with Our Comprehensive Management System
-                    </p>
-                    <p className="text-sm md:max-w-[60%] self-start">Simplify patient management, improve care coordination, and enhance patient outcomes with our intuitive and user-friendly platform.</p>
+                    <div className="flex flex-col gap-5 lg:flex-row">
+                        <div className="">
+                            <p className="text-2xl bg-linear-to-b from-emerald-400 to-sky-400 font-bold text-transparent font bg-clip-text md:text-3xl md:mt-10 lg:text-5xl lg:leading-[60px]">
+                                Streamline Patient Care with Our Comprehensive Management System
+                            </p>
+                            <p className="mt-4 text-sm md:max-w-[60%] self-start">Simplify patient management, improve care coordination, and enhance patient outcomes with our intuitive and user-friendly platform.</p>
+                        </div>
+                        <img
+                            className="rounded-sm max-w-[100%] w-[100%]"
+                            src="/visual.png" alt=""
+                        />
+                    </div>
                     <Link href="#">
                         <Button
                             onClick={focusOnInput}
