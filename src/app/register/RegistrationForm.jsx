@@ -18,6 +18,17 @@ import { UserRoundPlus } from "lucide-react";
 
 export default function RegistrationForm({ formRef }) {
     const db = usePGlite();
+    const blankData = {
+        firstname: '',
+        lastname: '',
+        dob: '',
+        gender: '',
+        email: '',
+        phone: '',
+        address: ''
+    }
+    const [formData, setFormData] = useState(blankData);
+
     async function registerPatient(patientData) {
         try {
             const result = await db.query(
@@ -39,20 +50,52 @@ export default function RegistrationForm({ formRef }) {
             toast(`Patient registration failed`);
         }
     }
-    const [formData, setFormData] = useState({
-        firstname: 'first',
-        lastname: 'last',
-        dob: '2025-02-02',
-        gender: 'male',
-        email: 'adfs@sadf.com',
-        phone: '234',
-        address: 'adkl3242'
-    });
+    function fillWithRandomData() {
+        const maleFirstNames = ['James', 'Liam', 'Noah', 'William', 'Benjamin', 'Michael', 'Elijah', 'Daniel', 'Henry', 'Alexander'];
+        const femaleFirstNames = ['Emma', 'Olivia', 'Ava', 'Sophia', 'Isabella', 'Mia', 'Charlotte', 'Amelia', 'Harper', 'Evelyn'];
+
+        const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Wilson', 'Taylor'];
+
+        const isMale = Math.random() < 0.5;
+        const selectedGender = isMale ? 'male' : 'female';
+
+        const randomFirstName = isMale
+            ? maleFirstNames[Math.floor(Math.random() * maleFirstNames.length)]
+            : femaleFirstNames[Math.floor(Math.random() * femaleFirstNames.length)];
+
+        const randomLastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+
+        const startDate = new Date(1950, 0, 1).getTime();
+        const endDate = new Date(2005, 11, 31).getTime();
+        const randomDate = new Date(startDate + Math.random() * (endDate - startDate));
+        const randomDob = randomDate.toISOString().split('T')[0];
+
+        const domains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+        const randomDomain = domains[Math.floor(Math.random() * domains.length)];
+        const randomEmail = `${randomFirstName.toLowerCase()}.${randomLastName.toLowerCase()}@${randomDomain}`;
+
+        const randomPhone = Math.floor(1000000000 + Math.random() * 9000000000).toString().substring(0, 10);
+
+        const streetNames = ['Main', 'Oak', 'Pine', 'Maple', 'Cedar', 'Elm'];
+        const randomStreet = streetNames[Math.floor(Math.random() * streetNames.length)];
+        const randomAddress = `${Math.floor(Math.random() * 9999) + 1} ${randomStreet} St`;
+
+        setFormData({
+            firstname: randomFirstName,
+            lastname: randomLastName,
+            dob: randomDob,
+            gender: selectedGender,
+            email: randomEmail,
+            phone: randomPhone,
+            address: randomAddress
+        });
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
         console.log(formData);
         await registerPatient(formData);
+        setFormData(blankData);
     }
 
     function handleInputChange(e) {
@@ -72,7 +115,12 @@ export default function RegistrationForm({ formRef }) {
 
     return (
         <div className="mb-20 max-w-[700px] md:mx-auto">
-            <h2 className="text-xl text-center mb-5">Register Patient</h2>
+            <div className="flex flex-col mb-5">
+                <h2 className="text-xl text-center mb-5">Register Patient</h2>
+                <Button variant="outline" className="ml-auto" onClick={fillWithRandomData}>
+                    Fill with Random Data
+                </Button>
+            </div>
             <form
                 onSubmit={handleSubmit}
                 className="flex flex-col gap-5"

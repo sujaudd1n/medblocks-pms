@@ -28,7 +28,7 @@ export default function HomePage() {
                         <Button
                             onClick={focusOnInput}
                         >
-                            <UserRoundPlus /> Register Now
+                            <UserRoundPlus /> Let's get started
                         </Button>
                     </Link>
                 </div>
