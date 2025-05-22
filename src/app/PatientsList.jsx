@@ -25,6 +25,7 @@ export default function PatientsList() {
         SELECT * FROM patients
         `,
     )
+    console.log(patients)
 
     async function deletePatient(id) {
         try {
@@ -36,12 +37,22 @@ export default function PatientsList() {
         }
     }
 
-    if (!patients || patients.rows.length === 0)
-        return <>Loading patients. Please wait.</>
 
     return (
-        <div>
+        <div className="mb-10">
             <h2 className="text-xl text-center mb-5">Patients List</h2>
+            <GetPatientsIfExists patients={patients} deletePatient={deletePatient} isTable={isTable} setIsTable={setIsTable} />
+        </div>
+    )
+}
+
+function GetPatientsIfExists({ patients, deletePatient, isTable, setIsTable }) {
+    if (!patients)
+        return <p>Loading patients. Please wait.</p>
+    if (patients.rows.length === 0)
+        return <p>There are no patients. Please register one.</p>
+    return (
+        <div>
             <div className="mb-5 flex gap-3">
                 <Button variant="outline" onClick={() => setIsTable(true)}>
                     <TableIcon /> Table View
@@ -52,8 +63,8 @@ export default function PatientsList() {
             </div>
             {isTable ? <PatientTable patients={patients} deletePatient={deletePatient} /> : <PatientsCards patients={patients} deletePatient={deletePatient} />}
         </div>
-    )
 
+    )
 
 }
 

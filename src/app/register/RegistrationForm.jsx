@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useState } from "react";
 import { usePGlite } from "@electric-sql/pglite-react";
 import { toast } from "sonner";
+import { UserRoundPlus } from "lucide-react";
 
 export default function RegistrationForm({ formRef }) {
     const db = usePGlite();
@@ -70,13 +71,13 @@ export default function RegistrationForm({ formRef }) {
     }
 
     return (
-        <div className="mb-20">
+        <div className="mb-20 max-w-[700px] md:mx-auto">
             <h2 className="text-xl text-center mb-5">Register Patient</h2>
             <form
                 onSubmit={handleSubmit}
-                className="flex flex-col gap-3"
+                className="flex flex-col gap-5"
             >
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                     <Label htmlFor="firstname">First Name</Label>
                     <Input
                         ref={formRef}
@@ -88,7 +89,7 @@ export default function RegistrationForm({ formRef }) {
                         required
                     />
                 </div>
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                     <Label htmlFor="lastname">Last Name</Label>
                     <Input
                         value={formData.lastname}
@@ -100,7 +101,7 @@ export default function RegistrationForm({ formRef }) {
                     />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                     <Label htmlFor="dob">Date of Birth</Label>
                     <Input
                         value={formData.dob}
@@ -111,7 +112,7 @@ export default function RegistrationForm({ formRef }) {
                     />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                     <Label htmlFor="gender">Gender</Label>
                     <Select
                         value={formData.gender}
@@ -129,7 +130,7 @@ export default function RegistrationForm({ formRef }) {
                     </Select>
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                     <Label htmlFor="email">Email</Label>
                     <Input
                         value={formData.email}
@@ -141,7 +142,7 @@ export default function RegistrationForm({ formRef }) {
                     />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                     <Label htmlFor="phone">Phone</Label>
                     <Input
                         value={formData.phone}
@@ -153,7 +154,7 @@ export default function RegistrationForm({ formRef }) {
                     />
                 </div>
 
-                <div className="grid w-full max-w-sm items-center gap-1.5">
+                <div className="grid w-full  items-center gap-1.5">
                     <Label htmlFor="address">Address</Label>
                     <Textarea
                         value={formData.address}
@@ -165,7 +166,7 @@ export default function RegistrationForm({ formRef }) {
                 </div>
 
                 <Button type="submit" className="mt-4">
-                    Register
+                    <UserRoundPlus /> Register
                 </Button>
             </form>
         </div>
