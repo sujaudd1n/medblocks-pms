@@ -1,5 +1,5 @@
 import Link from "next/link";
-import PatientsTable from "./PatientsTable";
+import PatientsList from "./PatientsList";
 import RegistrationForm from "./register/RegistrationForm";
 import { Button } from "@/components/ui/button";
 
@@ -19,8 +19,17 @@ export default function HomePage() {
                     </Link>
                 </div>
                 <RegistrationForm />
-                <PatientsTable />
+                <PatientsList />
             </div>
+            <Footer />
         </>
+    )
+}
+
+function Footer() {
+    return (
+        <footer className="p-3 bg-secondary">
+            <p className="text-xs">&copy; {new Date().getFullYear()} Patient System</p>
+        </footer>
     )
 }
