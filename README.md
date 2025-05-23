@@ -1,36 +1,25 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Patients Management System
 
-## Getting Started
+## Setup and Usage
 
-First, run the development server:
+Step 1: Clone the repository and navigate to the project directory:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/sujaudd1n/medblocks-pms.git
+cd medblocks-pms
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Step 2: Run the development server 
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+npm i
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Step 3: Open [http://localhost:3000](http://localhost:3000) in your browser to view the result.
 
-## Learn More
+## Challenges During Development
 
-To learn more about Next.js, take a look at the following resources:
+- The combination of **Select** and **Dialog** UI components from Radix UI did not work well. Sometimes it caused infinite recursion, and sometimes the default value was not set correctly. To fix the issue, I had to use the raw `select` HTML tag.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- As I was using NextJS, some configuration was required to use PGLite live queries. During deployment, this caused issues. After reading the PGLite documentation, I fixed the issue by adding necessary configuration, and it is now working well in production.

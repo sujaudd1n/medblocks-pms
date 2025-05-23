@@ -33,7 +33,6 @@ import { PatientForm } from "./RegistrationForm";
 
 export default function PatientsList() {
     const [isTable, setIsTable] = useState(true);
-    const [q, setQ] = useState('');
     const db = usePGlite();
 
     const patients = useLiveQuery(`
@@ -54,13 +53,13 @@ export default function PatientsList() {
     return (
         <div className="mb-10">
             <h2 className="text-xl text-center mb-5">Patients List</h2>
-            <Input className="mb-5 max-w-[400px]" placeholder="Search by name" value={q} onChange={(e) => setQ(e.target.value)} />
-            <GetPatientsIfExists patients={patients} q={q} deletePatient={deletePatient} isTable={isTable} setIsTable={setIsTable} />
+            <GetPatientsIfExists patients={patients} deletePatient={deletePatient} isTable={isTable} setIsTable={setIsTable} />
         </div>
     )
 }
 
-function GetPatientsIfExists({ patients, q, deletePatient, isTable, setIsTable }) {
+function GetPatientsIfExists({ patients, deletePatient, isTable, setIsTable }) {
+    const [q, setQ] = useState('');
     function filterPatients(patient) {
         const fullName = patient.firstname + ' ' + patient.lastname;
         return fullName.toLowerCase().includes(q.toLowerCase());
@@ -76,6 +75,7 @@ function GetPatientsIfExists({ patients, q, deletePatient, isTable, setIsTable }
         return <p>There are no patients. Please register one.</p>
     return (
         <div>
+            <Input className="mb-5 max-w-[400px]" placeholder="Search by name" value={q} onChange={(e) => setQ(e.target.value)} />
             <div className="mb-5 flex gap-3">
                 <Button variant="outline" onClick={() => setIsTable(true)}>
                     <TableIcon /> Table View

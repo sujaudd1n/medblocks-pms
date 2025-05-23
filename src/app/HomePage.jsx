@@ -29,7 +29,7 @@ export default function HomePage() {
                             <p className="mt-4 text-sm md:max-w-[60%] self-start">Simplify patient management, improve care coordination, and enhance patient outcomes with our intuitive and user-friendly platform.</p>
                         </div>
                         <img
-                            className="rounded-sm max-w-[100%] w-[100%]"
+                            className="rounded-sm max-w-[600px] w-[100%] mx-auto"
                             src="/visual.png" alt=""
                         />
                     </div>
